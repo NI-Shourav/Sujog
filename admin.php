@@ -38,7 +38,8 @@ $count = mysqli_fetch_array($result)[0];
     <link rel="shortcut icon" href="icons/opportunity.png" type="image/png">
     <link rel="stylesheet" href="admin.css">
     <link rel="stylesheet" media="screen" href="particles/demo/css/style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
 </head>
 
 
@@ -59,6 +60,7 @@ $count = mysqli_fetch_array($result)[0];
                         <ul>
                             <li><a href="searchHistory.php">Search History</a></li>
                             <li><a href="candidates.php">Candidates</a></li>
+                            <li><a href="statistics.php">Statistics</a></li>
                             <li><a href="adminUser.php">User</a></li>
                         </ul>
                     <li><a href="logout.php">Log out</a></li>
@@ -70,7 +72,7 @@ $count = mysqli_fetch_array($result)[0];
         <div class="content">
             <div class="text">
                 <p><span>Sujog, </span>Where one can find there Dream and get chance to fulfill it..</p>
-                <a href="search.html" class=" btn">Explore !</a>
+                <a href="admin.php" class=" btn">Explore !</a>
             </div>
             <div class="img">
                 <div class="social-icons">
@@ -119,65 +121,101 @@ $count = mysqli_fetch_array($result)[0];
                                         echo "No data found";
                                     } else {
                                         foreach ($arr as $arrData) { ?>
-                                            <div class="col-md-4">
-                                                <div class="card card-color">
-                                                    <img class="card-img-top" width="240" height="180" src="<?php echo $arrData['featuredImage'] ?>" alt="Card image cap">
-                                                    <div class="card-body text-dark">
-                                                        <h5 class='card-title text-truncate'><b><?php echo htmlspecialchars($arrData['title']); ?></b></h6>
-                                                            <p class="card-text text-truncate"><?php echo htmlspecialchars($arrData['description']); ?></p>
-                                                            <!-- Button trigger modal -->
-                                                            <button type="button" class="btn button-color" data-bs-toggle="modal" data-bs-target="#myModal<?php echo $arrData['post_id'] ?>">More Info</button>
-                                                            <!-- Modal -->
-                                                            <div class="modal fade modal-background" id="myModal<?php echo $arrData['post_id'] ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                                                <div class="modal-dialog modal-dialog-scrollable modal-lg">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h5 class='card-title'><b><?php echo htmlspecialchars($arrData['title']); ?></b></h6>
-                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            <div>
-                                                                                <img class="card-img-top" src="<?php echo $arrData['featuredImage'] ?>" alt="">
-                                                                            </div>
-                                                                            <p><b>Description: <br></b><?php echo htmlspecialchars($arrData['description']); ?></p>
-                                                                            <p><b>Eligibilities: <br></b><?php echo htmlspecialchars($arrData['eligibilities']); ?></p>
-                                                                            <p><b>Benefits:<br> </b><?php echo htmlspecialchars($arrData['benefits']); ?></p>
-                                                                            <p><b>Funding Type: </b><?php echo htmlspecialchars($arrData['fundingType']); ?></p>
+                                    <div class="col-md-4">
+                                        <div class="card card-color">
+                                            <img class="card-img-top" width="240" height="180"
+                                                src="<?php echo $arrData['featuredImage'] ?>" alt="Card image cap">
+                                            <div class="card-body text-dark">
+                                                <h5 class='card-title text-truncate'>
+                                                    <b><?php echo htmlspecialchars($arrData['title']); ?></b></h6>
+                                                    <p class="card-text text-truncate">
+                                                        <?php echo htmlspecialchars($arrData['description']); ?></p>
+                                                    <!-- Button trigger modal -->
+                                                    <button type="button" class="btn button-color"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#myModal<?php echo $arrData['post_id'] ?>">More
+                                                        Info</button>
+                                                    <!-- Modal -->
+                                                    <div class="modal fade modal-background"
+                                                        id="myModal<?php echo $arrData['post_id'] ?>"
+                                                        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class='card-title'>
+                                                                        <b><?php echo htmlspecialchars($arrData['title']); ?></b>
+                                                                        </h6>
+                                                                        <button type="button" class="btn-close"
+                                                                            data-bs-dismiss="modal"
+                                                                            aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div>
+                                                                        <img class="card-img-top"
+                                                                            src="<?php echo $arrData['featuredImage'] ?>"
+                                                                            alt="">
+                                                                    </div>
+                                                                    <p><b>Description:
+                                                                            <br></b><?php echo htmlspecialchars($arrData['description']); ?>
+                                                                    </p>
+                                                                    <p><b>Eligibilities:
+                                                                            <br></b><?php echo htmlspecialchars($arrData['eligibilities']); ?>
+                                                                    </p>
+                                                                    <p><b>Benefits:<br>
+                                                                        </b><?php echo htmlspecialchars($arrData['benefits']); ?>
+                                                                    </p>
+                                                                    <p><b>Funding Type:
+                                                                        </b><?php echo htmlspecialchars($arrData['fundingType']); ?>
+                                                                    </p>
 
-                                                                            <p><b>Official Website: </b> <a href="<?php echo htmlspecialchars($arrData['appliedLink']); ?>"><?php echo htmlspecialchars($arrData['appliedLink']); ?></a></p>
-                                                                            <p><b>Location: </b> <?php echo htmlspecialchars($arrData['location']); ?></p>
-                                                                            <p><b></b>The program is a <?php echo htmlspecialchars($arrData['tags']); ?> program. </p>
+                                                                    <p><b>Official Website: </b> <a
+                                                                            href="<?php echo htmlspecialchars($arrData['appliedLink']); ?>"><?php echo htmlspecialchars($arrData['appliedLink']); ?></a>
+                                                                    </p>
+                                                                    <p><b>Location: </b>
+                                                                        <?php echo htmlspecialchars($arrData['location']); ?>
+                                                                    </p>
+                                                                    <p><b></b>The program is a
+                                                                        <?php echo htmlspecialchars($arrData['tags']); ?>
+                                                                        program. </p>
 
-                                                                        </div>
+                                                                </div>
 
-                                                                        <form action="" method="POST">
-                                                                            <div class="modal-footer">
-                                                                                <?php
+                                                                <form action="" method="POST">
+                                                                    <div class="modal-footer">
+                                                                        <?php
                                                                                 $post_id = $arrData['post_id'];
                                                                                 $_SESSION['post_id'] = $post_id;
                                                                                 ?>
 
-                                                                                <?php if ($arrData['approveByAdmin'] == 0) { ?>
+                                                                        <?php if ($arrData['approveByAdmin'] == 0) { ?>
 
-                                                                                    <input type="submit" value="Approve" name="approved" class="btn solid button-color" data-bs-target="#myModal<?php echo $arrData['post_id'] ?>" />
-
+                                                                            <input type="submit" value="Approve"
+                                                                                name="approved"
+                                                                                class="btn solid button-color"
+                                                                                data-bs-target="#myModal<?php echo $arrData['post_id'] ?>" />
+                                                                        
                                                                                 <?php } ?>
 
-                                                                                <input type="submit" value="Delete" name="delete" class="btn solid button-color" data-bs-target="#myModal<?php echo $arrData['post_id'] ?>" />
-                                                                                <!-- back button -->
-                                                                                <button type="button" class="btn solid button-color" data-bs-dismiss="modal">Back</button>
-
-                                                                            </div>
-                                                                        </form>
-
-
+                                                                        <input type="submit" value="Delete"
+                                                                            name="delete" class="btn solid button-color"
+                                                                            data-bs-target="#myModal<?php echo $arrData['post_id'] ?>" />
+                                                                        <!-- back button -->
+                                                                        <button type="button"
+                                                                            class="btn solid button-color"
+                                                                            data-bs-dismiss="modal">Back</button>
 
                                                                     </div>
-                                                                </div>
+                                                                </form>
+
+
+
                                                             </div>
+                                                        </div>
                                                     </div>
-                                                </div>
                                             </div>
+                                        </div>
+                                    </div>
                                     <?php }
                                     }
                                     ?>

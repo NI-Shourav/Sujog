@@ -29,6 +29,10 @@ $resultt = mysqli_query($conn, $sqll); // get the result set (set of rows)
 
 $arrr = mysqli_fetch_all($resultt, MYSQLI_ASSOC); // fetch the resulting rows as an array
 
+if(isset($_POST['apply'])){
+    // go to apply.php
+    header('location: apply.php');
+}
 
 
 ?>
@@ -47,7 +51,8 @@ $arrr = mysqli_fetch_all($resultt, MYSQLI_ASSOC); // fetch the resulting rows as
     <title>Sujog</title>
     <link rel="shortcut icon" href="icons/opportunity.png" type="image/png">
     <link rel="stylesheet" href="main.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
 </head>
 
 
@@ -64,12 +69,15 @@ $arrr = mysqli_fetch_all($resultt, MYSQLI_ASSOC); // fetch the resulting rows as
                     <li>
                         <div class="container">
                             <form action="" method="post">
-                                <input class="search-style" type="text" placeholder="Search... " id="search" name="search">
+                                <input class="search-style" type="text" placeholder="Search... " id="search"
+                                    name="search">
                                 <!-- <input type="text" placeholder="Search..." id="search" name="search">s -->
-                                <button class="btn-style" type="submit" name="submitt"> <img class="search" src="icons/search.png" alt=""> </button>
+                                <button class="btn-style" type="submit" name="submitt"> <img class="search"
+                                        src="icons/search.png" alt=""> </button>
                             </form>
                         </div>
                     </li>
+                    <li><a href="discussForum/index.php">Forum</a></li>
                     <li><a href="main.php">Browse Opportunities</a>
                         <ul>
                             <li><a href="browse/nearDeadline.php">Near Deadline</a></li>
@@ -138,66 +146,99 @@ $arrr = mysqli_fetch_all($resultt, MYSQLI_ASSOC); // fetch the resulting rows as
                                 <div class="row">
 
                                     <?php foreach ($arr as $arrData) { ?>
-                                        <?php if ($arrData['approveByAdmin'] == 1) { ?>
-                                            <div class="col-md-4">
-                                                <div class="card card-color">
-                                                    <img class="card-img-top" width="240" height="180" src="<?php echo $arrData['featuredImage'] ?>" alt="Card image cap">
-                                                    <div class="card-body text-dark">
-                                                        <h5 class='card-title text-truncate'><b><?php echo htmlspecialchars($arrData['title']); ?></b></h6>
-                                                            <p class="card-text text-truncate"><?php echo htmlspecialchars($arrData['description']); ?></p>
+                                    <?php if ($arrData['approveByAdmin'] == 1) { ?>
+                                    <div class="col-md-4">
+                                        <div class="card card-color">
+                                            <img class="card-img-top" width="240" height="180"
+                                                src="<?php echo $arrData['featuredImage'] ?>" alt="Card image cap">
+                                            <div class="card-body text-dark">
+                                                <h5 class='card-title text-truncate'>
+                                                    <b><?php echo htmlspecialchars($arrData['title']); ?></b></h6>
+                                                    <p class="card-text text-truncate">
+                                                        <?php echo htmlspecialchars($arrData['description']); ?></p>
 
-                                                            <!-- Button trigger modal -->
-                                                            <button type="button" class="btn button-color" data-bs-toggle="modal" data-bs-target="#myModal<?php echo $arrData['post_id'] ?>">More Info</button>
-                                                            <!-- Modal -->
-                                                            <div class="modal fade modal-background" id="myModal<?php echo $arrData['post_id'] ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                                                <div class="modal-dialog modal-dialog-scrollable modal-lg">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h5 class='card-title'><b><?php echo htmlspecialchars($arrData['title']); ?></b></h6>
-                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                        </div>
-                                                                        <div class="modal-body text-dark">
-                                                                            <div>
-                                                                                <img class="card-img-top" src="<?php echo $arrData['featuredImage'] ?>" alt="">
-                                                                            </div>
-                                                                            <p><b>Description: <br></b><?php echo htmlspecialchars($arrData['description']); ?></p>
-                                                                            <p><b>Eligibilities: <br></b><?php echo htmlspecialchars($arrData['eligibilities']); ?></p>
-                                                                            <p><b>Benefits:<br> </b><?php echo htmlspecialchars($arrData['benefits']); ?></p>
-                                                                            <p><b>Funding Type: </b><?php echo htmlspecialchars($arrData['fundingType']); ?></p>
-
-                                                                            <p><b>Official Website: </b> <a href="<?php echo htmlspecialchars($arrData['appliedLink']); ?>"><?php echo htmlspecialchars($arrData['appliedLink']); ?></a></p>
-                                                                            <p><b>Location: </b> <?php echo htmlspecialchars($arrData['location']); ?></p>
-                                                                            <p><b></b>The program is a <?php echo htmlspecialchars($arrData['tags']); ?> program. </p>
-                                                                            <!-- get the organizer mail and store it into session -->
-
-                                                                        </div>
-
-
-                                                                        <form action="" method="POST">
-                                                                            <div class="modal-footer">
-
-                                                                                <?php
-                                                                                $organizerMail = $arrData['organizerMail'];
-                                                                                $_SESSION['organizerMail'] = $organizerMail;
-                                                                                ?>
-                                                                                <input type="submit" value="Apply Now" name="apply" class="btn solid button-color" data-bs-target="#myModal<?php echo $arrData['post_id'] ?>" />
-                                                                                <button type="button" class="btn solid button-color" data-bs-dismiss="modal">Close</button>
-
-                                                                            </div>
-                                                                        </form>
-
+                                                    <!-- Button trigger modal -->
+                                                    <button type="button" class="btn button-color"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#myModal<?php echo $arrData['post_id'] ?>">More
+                                                        Info</button>
+                                                    <!-- Modal -->
+                                                    <div class="modal fade modal-background"
+                                                        id="myModal<?php echo $arrData['post_id'] ?>"
+                                                        data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                                        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class='card-title'>
+                                                                        <b><?php echo htmlspecialchars($arrData['title']); ?></b>
+                                                                        </h6>
+                                                                        <button type="button" class="btn-close"
+                                                                            data-bs-dismiss="modal"
+                                                                            aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body text-dark">
+                                                                    <div>
+                                                                        <img class="card-img-top"
+                                                                            src="<?php echo $arrData['featuredImage'] ?>"
+                                                                            alt="">
                                                                     </div>
+                                                                    <p><b>Description:
+                                                                            <br></b><?php echo htmlspecialchars($arrData['description']); ?>
+                                                                    </p>
+                                                                    <p><b>Eligibilities:
+                                                                            <br></b><?php echo htmlspecialchars($arrData['eligibilities']); ?>
+                                                                    </p>
+                                                                    <p><b>Benefits:<br>
+                                                                        </b><?php echo htmlspecialchars($arrData['benefits']); ?>
+                                                                    </p>
+                                                                    <p><b>Funding Type:
+                                                                        </b><?php echo htmlspecialchars($arrData['fundingType']); ?>
+                                                                    </p>
+
+                                                                    <p><b>Official Website: </b> <a
+                                                                            href="<?php echo htmlspecialchars($arrData['appliedLink']); ?>"><?php echo htmlspecialchars($arrData['appliedLink']); ?></a>
+                                                                    </p>
+                                                                    <p><b>Location: </b>
+                                                                        <?php echo htmlspecialchars($arrData['location']); ?>
+                                                                    </p>
+                                                                    <p><b></b>The program is a
+                                                                        <?php echo htmlspecialchars($arrData['tags']); ?>
+                                                                        program. </p>
+                                                                    <!-- get the organizer mail and store it into session -->
 
                                                                 </div>
 
+
+                                                                <form action="" method="POST">
+                                                                    <div class="modal-footer">
+
+                                                                        <?php
+                                                                                $organizerMail = $arrData['organizerMail'];
+                                                                                $_SESSION['organizerMail'] = $organizerMail;
+                                                                                ?>
+                                                                        <input type="submit" value="Apply Now"
+                                                                            name="apply" class="btn solid button-color"
+                                                                            data-bs-target="#myModal<?php echo $arrData['post_id'] ?>" />
+                                                                        <button type="button"
+                                                                            class="btn solid button-color"
+                                                                            data-bs-dismiss="modal">Close</button>
+
+                                                                    </div>
+                                                                </form>
+
                                                             </div>
+
+                                                        </div>
 
                                                     </div>
 
-                                                </div>
-
                                             </div>
-                                        <?php } ?>
+
+                                        </div>
+
+                                    </div>
+                                    <?php } ?>
                                     <?php } ?>
 
 
@@ -236,66 +277,97 @@ $arrr = mysqli_fetch_all($resultt, MYSQLI_ASSOC); // fetch the resulting rows as
                             <div class="row">
 
                                 <?php foreach ($arrr as $arrData) { ?>
-                                    <?php if ($arrData['approveByAdmin'] == 1) { ?>
-                                        <div class="col-md-4">
-                                            <div class="card card-color">
-                                                <img class="card-img-top" width="240" height="180" src="<?php echo $arrData['featuredImage'] ?>" alt="Card image cap">
-                                                <div class="card-body text-dark">
-                                                    <h5 class='card-title text-truncate'><b><?php echo htmlspecialchars($arrData['title']); ?></b></h6>
-                                                        <p class="card-text text-truncate"><?php echo htmlspecialchars($arrData['description']); ?></p>
+                                <?php if ($arrData['approveByAdmin'] == 1) { ?>
+                                <div class="col-md-4">
+                                    <div class="card card-color">
+                                        <img class="card-img-top" width="240" height="180"
+                                            src="<?php echo $arrData['featuredImage'] ?>" alt="Card image cap">
+                                        <div class="card-body text-dark">
+                                            <h5 class='card-title text-truncate'>
+                                                <b><?php echo htmlspecialchars($arrData['title']); ?></b></h6>
+                                                <p class="card-text text-truncate">
+                                                    <?php echo htmlspecialchars($arrData['description']); ?></p>
 
-                                                        <!-- Button trigger modal -->
-                                                        <button type="button" class="btn button-color" data-bs-toggle="modal" data-bs-target="#myModal<?php echo $arrData['post_id'] ?>">More Info</button>
-                                                        <!-- Modal -->
-                                                        <div class="modal fade modal-background" id="myModal<?php echo $arrData['post_id'] ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                                            <div class="modal-dialog modal-dialog-scrollable modal-lg">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <h5 class='card-title'><b><?php echo htmlspecialchars($arrData['title']); ?></b></h6>
-                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                    </div>
-                                                                    <div class="modal-body text-dark">
-                                                                        <div>
-                                                                            <img class="card-img-top" src="<?php echo $arrData['featuredImage'] ?>" alt="">
-                                                                        </div>
-                                                                        <p><b>Description: <br></b><?php echo htmlspecialchars($arrData['description']); ?></p>
-                                                                        <p><b>Eligibilities: <br></b><?php echo htmlspecialchars($arrData['eligibilities']); ?></p>
-                                                                        <p><b>Benefits:<br> </b><?php echo htmlspecialchars($arrData['benefits']); ?></p>
-                                                                        <p><b>Funding Type: </b><?php echo htmlspecialchars($arrData['fundingType']); ?></p>
-
-                                                                        <p><b>Official Website: </b> <a href="<?php echo htmlspecialchars($arrData['appliedLink']); ?>"><?php echo htmlspecialchars($arrData['appliedLink']); ?></a></p>
-                                                                        <p><b>Location: </b> <?php echo htmlspecialchars($arrData['location']); ?></p>
-                                                                        <p><b></b>The program is a <?php echo htmlspecialchars($arrData['tags']); ?> program. </p>
-                                                                        <!-- get the organizer mail and store it into session -->
-
-                                                                    </div>
-
-
-                                                                    <form action="" method="POST">
-                                                                        <div class="modal-footer">
-
-                                                                            <?php
-                                                                            $organizerMail = $arrData['organizerMail'];
-                                                                            $_SESSION['organizerMail'] = $organizerMail;
-                                                                            ?>
-                                                                            <input type="submit" value="Apply Now" name="apply" class="btn solid button-color" data-bs-target="#myModal<?php echo $arrData['post_id'] ?>" />
-                                                                            <button type="button" class="btn solid button-color" data-bs-dismiss="modal">Close</button>
-
-                                                                        </div>
-                                                                    </form>
-
+                                                <!-- Button trigger modal -->
+                                                <button type="button" class="btn button-color" data-bs-toggle="modal"
+                                                    data-bs-target="#myModal<?php echo $arrData['post_id'] ?>">More
+                                                    Info</button>
+                                                <!-- Modal -->
+                                                <div class="modal fade modal-background"
+                                                    id="myModal<?php echo $arrData['post_id'] ?>"
+                                                    data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                                    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class='card-title'>
+                                                                    <b><?php echo htmlspecialchars($arrData['title']); ?></b>
+                                                                    </h6>
+                                                                    <button type="button" class="btn-close"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body text-dark">
+                                                                <div>
+                                                                    <img class="card-img-top"
+                                                                        src="<?php echo $arrData['featuredImage'] ?>"
+                                                                        alt="">
                                                                 </div>
+                                                                <p><b>Description:
+                                                                        <br></b><?php echo htmlspecialchars($arrData['description']); ?>
+                                                                </p>
+                                                                <p><b>Eligibilities:
+                                                                        <br></b><?php echo htmlspecialchars($arrData['eligibilities']); ?>
+                                                                </p>
+                                                                <p><b>Benefits:<br>
+                                                                    </b><?php echo htmlspecialchars($arrData['benefits']); ?>
+                                                                </p>
+                                                                <p><b>Funding Type:
+                                                                    </b><?php echo htmlspecialchars($arrData['fundingType']); ?>
+                                                                </p>
+
+                                                                <p><b>Official Website: </b> <a
+                                                                        href="<?php echo htmlspecialchars($arrData['appliedLink']); ?>"><?php echo htmlspecialchars($arrData['appliedLink']); ?></a>
+                                                                </p>
+                                                                <p><b>Location: </b>
+                                                                    <?php echo htmlspecialchars($arrData['location']); ?>
+                                                                </p>
+                                                                <p><b></b>The program is a
+                                                                    <?php echo htmlspecialchars($arrData['tags']); ?>
+                                                                    program. </p>
+                                                                <!-- get the organizer mail and store it into session -->
 
                                                             </div>
 
+
+                                                            <form action="" method="POST">
+                                                                <div class="modal-footer">
+
+                                                                    <?php
+                                                                            $organizerMail = $arrData['organizerMail'];
+                                                                            $_SESSION['organizerMail'] = $organizerMail;
+                                                                            ?>
+                                                                    <input type="submit" value="Apply Now" name="apply"
+                                                                        class="btn solid button-color"
+                                                                        data-bs-target="#myModal<?php echo $arrData['post_id'] ?>" />
+                                                                    <button type="button" class="btn solid button-color"
+                                                                        data-bs-dismiss="modal">Close</button>
+
+                                                                </div>
+                                                            </form>
+
                                                         </div>
+
+                                                    </div>
 
                                                 </div>
 
-                                            </div>
-
                                         </div>
-                                    <?php } ?>
+
+                                    </div>
+
+                                </div>
+                                <?php } ?>
                                 <?php } ?>
 
                             </div>
