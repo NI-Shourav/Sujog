@@ -10,19 +10,19 @@ $user_id = $_SESSION['user_id'];
 
 // check if the apply button is clicked
 
-if (isset($_POST["submitForum"])) {
-    if (empty($_POST["subject"]) || empty($_POST["type"]) || empty($_POST["ques"])) {
+if(isset($_POST["submitForum"])){
+    if(empty($_POST["subject"]) || empty($_POST["type"]) || empty($_POST["ques"])){
         echo '<script>alert("Please fill all the fields")</script>';
-    } else {
+    }else{
         $subject = $_POST["subject"];
         $type = $_POST["type"];
         $ques = $_POST["ques"];
         $user_id = $_SESSION['user_id'];
         $sql = "INSERT INTO forumpost(id, subject, type, questions, time) VALUES ('$user_id', '$subject', '$type', '$ques', current_timestamp())";
         $result = mysqli_query($conn, $sql);
-        if ($result) {
+        if($result){
             echo '<script>alert("Your question has been posted successfully")</script>';
-        } else {
+        }else{
             echo '<script>alert("Something went wrong")</script>';
         }
     }
@@ -31,10 +31,6 @@ if (isset($_POST["submitForum"])) {
 $sql = "SELECT * FROM `forumpost` INNER JOIN users WHERE forumpost.id=users.id";
 $result = mysqli_query($conn, $sql);
 $arr = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
-if (isset($_POST["like"])) {
-    header('location: dum.php');
-}
 
 ?>
 <!DOCTYPE html>
@@ -130,102 +126,51 @@ if (isset($_POST["like"])) {
 
                     <!-- Forum List -->
                     <div class="inner-main-body p-2 p-sm-3 collapse forum-content show">
-                        <?php
+                    <?php
                         foreach ($arr as $arrData) { ?>
                             <div class="card mb-2">
                                 <div class="card-body p-2 p-sm-3">
                                     <div class="media forum-item">
-                                        <a href="#" data-toggle="collapse" data-target=".forum-content"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="mr-3 rounded-circle" width="50" alt="User" /></a>
-                                        <div class="media-body">
-                                            <h6><a href="#" data-toggle="collapse" data-target=".forum-content" class="text-body"> <?php echo $arrData['subject']; ?> </a></h6>
-                                            <p class="text-secondary">
-                                                <?php echo $arrData['questions']; ?>
-                                            </p>
-                                            <p class="text-muted"><a href="javascript:void(0)">posted</a> <span class="text-secondary font-weight-bold">
-                                                    <?php
-                                                    date_default_timezone_set('Asia/Dhaka');
-                                                    $postedTime = strtotime($arrData['time']);
-                                                    $currentTime = time();
-                                                    $timeDifference = $currentTime - $postedTime;
-                                                    $minutes = floor($timeDifference / 60);
-                                                    $hours = floor($timeDifference / 3600);
-                                                    $days = floor($timeDifference / 86400);
-                                                    if ($minutes < 60) {
-                                                        echo $minutes . " min ago";
-                                                    } elseif ($hours < 24) {
-                                                        echo $hours . " hours ago";
-                                                    } else {
-                                                        echo $days . " days ago";
-                                                    }
-
-                                                    ?>
-                                                </span> by <a href="javascript:void(0)" class="text-secondary font-weight-bold"> <?php echo $arrData['name']; ?> </a>
-                                            </p>
-                                        </div>
-                                        <!-- <div class="text-muted small text-center align-self-center">
-                                            <form action="like.php" method="post">
-                                                <?php
-                                                $forum_id = $arrData['forum_id'];
-                                                $_SESSION['forum_id'] = $forum_id;
-                                                ?>
-                                                <button style="border: none; background: none; outline: none; cursor: pointer;" class="d-none d-sm-inline-block"><i class="far fa-thumbs-up" name="like"> <?php echo $arrData['likes']; ?> </i></button>
-                                                </button>
-                                            </form>
-                                        </div> -->
-
-                                        <div class="text-muted small text-center align-self-center">
-                                            <form action="" method="post">
-                                                <button style="border: none; background: none; outline: none; cursor: pointer;" class="d-none d-sm-inline-block" onclick="updateLikes(<?php echo $arrData['forum_id']; ?>)">
-                                                    <i class="far fa-thumbs-up" name="like">
-                                                        <?php echo $arrData['likes']; ?>
-                                                    </i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                        <script>
-                                            function updateLikes(forum_id) {
-                                                // Send an AJAX request to the server to update the likes
-                                                var xhr = new XMLHttpRequest();
-                                                xhr.open("POST", "like.php", true);
-                                                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                                                xhr.onreadystatechange = function() {
-                                                    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                                                        // Update the likes count on the page
-                                                        var likesElement = document.querySelector('[data-id="' + forum_id + '"] i');
-                                                        var likesCount = parseInt(likesElement.innerHTML);
-                                                        likesElement.innerHTML = likesCount + 1;
-                                                    }
-                                                }
-                                                xhr.send("forum_id=" + forum_id);
-                                            }
-                                        </script>
-
-
-                                        <!-- <div class="text-muted small text-center align-self-center" data-id="<?php echo $arrData['forum_id']; ?>">
-                                            <form action="" method="post">
-                                                <button data-id="<?php echo $arrData['forum_id']; ?>" style="border: none; background: none; outline: none; cursor: pointer;" class="d-none d-sm-inline-block" onclick="updateSession('<?php echo $forum_id; ?>')">
-                                                    <i class="far fa-thumbs-down" name="like">
-                                                        <?php echo $arrData['likes']; ?>
-                                                    </i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                        <script>
-                                            function updateSession(forum_id) {
-                                                // Update session variable with forum id
-                                                <?php
-                                                $sql = "UPDATE `forumpost` SET `likes` = `likes` - 1 WHERE forum_id = '$forum_id'";
-                                                $result = mysqli_query($conn, $sql);
-                                                ?>
-                                            }
-                                        </script> -->
-
-
+                                                <a href="#" data-toggle="collapse" data-target=".forum-content"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="mr-3 rounded-circle" width="50" alt="User" /></a>
+                                                <div class="media-body">
+                                                    <h6><a href="#" data-toggle="collapse" data-target=".forum-content" class="text-body"> <?php echo $arrData['subject']; ?> </a></h6>
+                                                    <p class="text-secondary">
+                                                        <?php echo $arrData['questions']; ?>
+                                                    </p>
+                                                    <p class="text-muted"><a href="javascript:void(0)">posted</a> <span class="text-secondary font-weight-bold"> 
+                                                        <?php 
+                                                            date_default_timezone_set('Asia/Dhaka');
+                                                            $postedTime = strtotime($arrData['time']);
+                                                            $currentTime = time();
+                                                            $timeDifference = $currentTime - $postedTime;
+                                                            $minutes = floor($timeDifference / 60);
+                                                            $hours = floor($timeDifference / 3600);
+                                                            $days = floor($timeDifference / 86400);
+                                                            if ($minutes < 60) {
+                                                                echo $minutes . " min ago";
+                                                                } elseif ($hours < 24) {
+                                                                echo $hours . " hours ago";
+                                                                } else {
+                                                                echo $days . " days ago";
+                                                                }
+                                                                                                 
+                                                        ?> 
+                                                        </span> by <a href="javascript:void(0)" class="text-secondary font-weight-bold"> <?php echo $arrData['name']; ?> </a>
+                                                    </p>
+                                                </div>
+                                                <div class="text-muted small text-center align-self-center">
+                                                    <button 
+                                                        style="border: none; background: none; outline: none; cursor: pointer;"
+                                                        class="d-none d-sm-inline-block"><i class="far fa-thumbs-up">  <?php echo $arrData['likes']; ?> </i></button>
+                                                    </button>
+                                                </div>
+                                                
+                                        
                                     </div>
                                 </div>
                             </div>
                         <?php }
-                        ?>
+                                    ?>
                         <ul class="pagination pagination-sm pagination-circle justify-content-center mb-0">
                             <li class="page-item disabled">
                                 <span class="page-link has-icon"><i class="material-icons">chevron_left</i></span>
@@ -241,7 +186,6 @@ if (isset($_POST["like"])) {
                     <!-- /Forum List -->
 
                     <!-- Forum Detail -->
-                    <!-- 
                     <div class="inner-main-body p-2 p-sm-3 collapse forum-content">
                         <a href="#" class="btn btn-light btn-sm mb-3 has-icon" data-toggle="collapse" data-target=".forum-content"><i class="fa fa-arrow-left mr-2"></i>Back</a>
                         <div class="card mb-2">
@@ -291,7 +235,7 @@ if (isset($_POST["like"])) {
                                 </div>
                             </div>
                         </div>
-                    </div> -->
+                    </div>
                     <!-- /Forum Detail -->
 
                     <!-- /Inner main body -->
@@ -351,10 +295,9 @@ if (isset($_POST["like"])) {
             margin-top: 20px;
             color: #1a202c;
             text-align: left;
-            background: linear-gradient(90deg, #0f102d 0%, #0c61d1 50%, #f09053 100%);
+            background: #0f102d;
 
         }
-
         .inner-wrapper {
             position: relative;
             height: calc(100vh - 3.5rem);
