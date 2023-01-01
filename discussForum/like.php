@@ -11,73 +11,52 @@ include('../connectDB/config.php');
 $type = mysqli_real_escape_string($conn, $_POST['type']);
 $forum_id = mysqli_real_escape_string($conn, $_POST['forum_id']);
 
+$user_id = $_SESSION['user_id'];
+
 $sql = "SELECT * FROM forumpost WHERE forum_id = $forum_id";
 $result = mysqli_query($conn, $sql) or die("Query Failed.");
 $row = mysqli_fetch_assoc($result);
 
-// if setlikes = 0, then the user has not liked the post
-// if setlikes = 1, then the user has liked the post
-// if dislikes = 0, then the user has not disliked the post
-// if dislikes = 1, then the user has disliked the post
-
-if ($type == 'like') {
-    if ($row['setlikes'] == 0) {
-        $sql = "UPDATE forumpost SET likes = likes + 1, setlikes = 1 WHERE forum_id = $forum_id";
-        // echo '<script>alert("You have liked this post")</script>';
-    } else{
-        // $sql = "UPDATE forumpost SET likes = likes - 1, setlikes = 0 WHERE forum_id = $forum_id";
-        echo '<script>alert("You have liked this post")</script>';
+if ($type == 'like'){
+    $sql2 = "SELECT * FROM likepost WHERE forum_id = $forum_id AND id = $user_id";
+    $result2 = mysqli_query($conn, $sql2) or die("Query Failed.");
+    $row2 = mysqli_fetch_assoc($result2);
+    $check = mysqli_num_rows($result2); // no data found which means user has not liked or disliked yet
+    if($check == 0){
+        $sql3 = "INSERT INTO likepost (id, forum_id, likes,dislikes, time) VALUES ('$user_id', '$forum_id', 1, 0, now())";
+        $result3 = mysqli_query($conn, $sql3) or die("Query Failed.");
+        $sql4 = "UPDATE forumpost SET likes = likes + 1 WHERE forum_id = $forum_id";
+        $result4 = mysqli_query($conn, $sql4) or die("Query Failed.");
+    }else{
+        if($row2['likes'] == 1){
+            echo '<script>alert("You have already liked this post.");</script>';
+        }else{
+            $sql3 = "UPDATE likepost SET likes = 1, dislikes = 0 WHERE forum_id = $forum_id AND id = $user_id";
+            $result3 = mysqli_query($conn, $sql3) or die("Query Failed.");
+            $sql4 = "UPDATE forumpost SET likes = likes + 1, dislikes = dislikes - 1 WHERE forum_id = $forum_id";
+            $result4 = mysqli_query($conn, $sql4) or die("Query Failed.");
+        }
     }
 }
 
-if ($type == 'dislike') {
-    if ($row['setdislikes'] == 0) {
-        $sql = "UPDATE forumpost SET dislikes = dislikes - 1, setdislikes = 1 WHERE forum_id = $forum_id";
-        //echo '<script>alert("You have disliked this post")</script>';
-    } else {
-        // $sql = "UPDATE forumpost SET dislikes = dislikes + 1, setdislikes = 0 WHERE forum_id = $forum_id";
-        echo '<script>alert("You have disliked this post")</script>';
+if ($type == 'dislike'){
+    $sql2 = "SELECT * FROM likepost WHERE forum_id = $forum_id AND id = $user_id";
+    $result2 = mysqli_query($conn, $sql2) or die("Query Failed.");
+    $row2 = mysqli_fetch_assoc($result2);
+    $check = mysqli_num_rows($result2); // no data found which means user has not liked or disliked yet
+    if($check == 0){
+        $sql3 = "INSERT INTO likepost (id, forum_id, likes,dislikes, time) VALUES ('$user_id', '$forum_id', 0, 1, now())";
+        $result3 = mysqli_query($conn, $sql3) or die("Query Failed.");
+        $sql4 = "UPDATE forumpost SET dislikes = dislikes + 1 WHERE forum_id = $forum_id";
+        $result4 = mysqli_query($conn, $sql4) or die("Query Failed.");
+    }else{
+        if($row2['dislikes'] == 1){
+            echo '<script>alert("You have already disliked this post.");</script>';
+        }else{
+            $sql3 = "UPDATE likepost SET likes = 0, dislikes = 1 WHERE forum_id = $forum_id AND id = $user_id";
+            $result3 = mysqli_query($conn, $sql3) or die("Query Failed.");
+            $sql4 = "UPDATE forumpost SET likes = likes - 1, dislikes = dislikes + 1 WHERE forum_id = $forum_id";
+            $result4 = mysqli_query($conn, $sql4) or die("Query Failed.");
+        }
     }
 }
-
-$result = mysqli_query($conn, $sql) or die("Query Failed.");
-
-echo '<script>window.location.href = "index.php";</script>';
-
-// print_r($type);
-// print_r($forum_id);
-
-// if(isset($_POST['type']) &&  $_POST['type'] != '' && isset($_POST['forum_id']) && $_POST['forum_id'] > 0){
-//     $type = mysqli_real_escape_string($conn, $_POST['type']);
-//     $forum_id = mysqli_real_escape_string($conn, $_POST['forum_id']);
-    
-//     if ($type == 'like') {
-//         if(isset($_COOKIE['like_'.$forum_id])){
-//             setcookie('dislike_'.$forum_id, "yes", time() + 60 );
-//             $sql = "UPDATE forumpost SET likes = likes - 1 WHERE forum_id = $forum_id";
-//             echo '<script>alert("You have already liked this post")</script>' ;
-//         }else{
-//             setcookie('dislike_'.$forum_id, "yes", time() + 60 );
-//             $sql = "UPDATE forumpost SET likes = likes + 1 WHERE forum_id = $forum_id";
-//             echo '<script>alert("You have liked this post")</script>' ;
-//         }
-//     }
-    
-//     if($type == 'dislike'){
-//         if(isset($_COOKIE['dislike_'.$forum_id])){
-//             setcookie('dislike_'.$forum_id, "yes", time() + 60 );
-//             $sql = "UPDATE forumpost SET dislikes = dislikes - 1 WHERE forum_id = $forum_id";
-//             echo '<script>alert("You have already disliked this post")</script>' ;
-//         }else{
-//             setcookie('dislike_'.$forum_id, "yes", time() + 60 );
-//             $sql = "UPDATE forumpost SET dislikes = dislikes + 1 WHERE forum_id = $forum_id";
-//             echo '<script>alert("You have disliked this post")</script>' ;
-//         }
-//     }
-
-//     $result = mysqli_query($conn, $sql) or die("Query Failed.");
-
-// }
-    
-
-?>

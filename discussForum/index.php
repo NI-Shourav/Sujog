@@ -9,6 +9,27 @@ include('../connectDB/config.php');
 $user_id = $_SESSION['user_id'];
 
 // check if the apply button is clicked
+// all
+// popular
+// alltime
+if(isset($_POST["all"])){
+$sql = "SELECT * FROM `forumpost` INNER JOIN users WHERE forumpost.id=users.id";
+$result = mysqli_query($conn, $sql);
+$arr = mysqli_fetch_all($result, MYSQLI_ASSOC);
+}elseif(isset($_POST["popular"])){
+$sql = "SELECT * FROM `forumpost` INNER JOIN users WHERE forumpost.id=users.id ORDER BY likes DESC";
+$result = mysqli_query($conn, $sql);
+$arr = mysqli_fetch_all($result, MYSQLI_ASSOC);
+}elseif(isset($_POST["alltime"])){
+$sql = "SELECT * FROM `forumpost` INNER JOIN users WHERE forumpost.id=users.id ORDER BY time DESC";
+$result = mysqli_query($conn, $sql);
+$arr = mysqli_fetch_all($result, MYSQLI_ASSOC);
+}else{
+$sql = "SELECT * FROM `forumpost` INNER JOIN users WHERE forumpost.id=users.id";
+$result = mysqli_query($conn, $sql);
+$arr = mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
 
 if(isset($_POST["submitForum"])){
     if(empty($_POST["subject"]) || empty($_POST["type"]) || empty($_POST["ques"])){
@@ -18,7 +39,7 @@ if(isset($_POST["submitForum"])){
         $type = $_POST["type"];
         $ques = $_POST["ques"];
         $user_id = $_SESSION['user_id'];
-        $sql = "INSERT INTO forumpost(id, subject, type, questions, time) VALUES ('$user_id', '$subject', '$type', '$ques', current_timestamp())";
+        $sql = "INSERT INTO forumpost(id, subject, type, questions, time, likes,dislikes) VALUES ('$user_id', '$subject', '$type', '$ques', current_timestamp(),0,0)";
         $result = mysqli_query($conn, $sql);
         if($result){
             echo '<script>alert("Your question has been posted successfully")</script>';
@@ -26,11 +47,11 @@ if(isset($_POST["submitForum"])){
             echo '<script>alert("Something went wrong")</script>';
         }
     }
+
+    header('location: index.php');
 }
 
-$sql = "SELECT * FROM `forumpost` INNER JOIN users WHERE forumpost.id=users.id";
-$result = mysqli_query($conn, $sql);
-$arr = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
 
 ?>
 <!DOCTYPE html>
@@ -85,12 +106,18 @@ $arr = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                         <div class="simplebar-content-wrapper" style="height: 100%; overflow: hidden scroll;">
                                             <div class="simplebar-content" style="padding: 16px;">
                                                 <nav class="nav nav-pills nav-gap-y-1 flex-column">
-                                                    <a href="javascript:void(0)" class="nav-link nav-link-faded has-icon active">All Threads</a>
-                                                    <a href="javascript:void(0)" class="nav-link nav-link-faded has-icon">Popular this week</a>
-                                                    <a href="javascript:void(0)" class="nav-link nav-link-faded has-icon">Popular all time</a>
-                                                    <a href="javascript:void(0)" class="nav-link nav-link-faded has-icon">Solved</a>
-                                                    <a href="javascript:void(0)" class="nav-link nav-link-faded has-icon">Unsolved</a>
-                                                    <a href="javascript:void(0)" class="nav-link nav-link-faded has-icon">No replies yet</a>
+                                                    <form action="" method="POST" style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 20px; 
+                                                                                        border: 1px solid #e5e5e5; border-radius: 5px; padding: 15px;">
+                                                        <button class="" name="all" style="margin-bottom: 10px; width: 100%; text-align: center; 
+                                                                                    background-color: #fff; border: none; outline: none; cursor: pointer; font-size: 16px;
+                                                                                     font-weight: 500; color: #000; padding: 10px 0;">All</button>
+                                                        <button class="" name="popular" style="margin-bottom: 10px; width: 100%; text-align: center; 
+                                                                                    background-color: #fff; border: none; outline: none; cursor: pointer; font-size: 16px;
+                                                                                     font-weight: 500; color: #000; padding: 10px 0;">Popular this week</button>
+                                                        <button class="" name="alltime" style="margin-bottom: 10px; width: 100%; text-align: center; 
+                                                                                    background-color: #fff; border: none; outline: none; cursor: pointer; font-size: 16px;
+                                                                                     font-weight: 500; color: #000; padding: 10px 0;">Popular all time</button>
+                                                    </form>                                 
                                                 </nav>
                                             </div>
                                         </div>
