@@ -7,7 +7,6 @@ Sujog is a web-based platform built to provide a range of opportunities for user
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
@@ -65,8 +64,5 @@ Sujog is a web-based platform built to provide a range of opportunities for user
 
 If you'd like to contribute to the project, feel free to submit a pull request or open an issue.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 
