@@ -13,7 +13,8 @@ Sujog is a web-based platform built to provide a range of opportunities for user
 - **Responsive Design**: Built with a focus on user experience.
 - **Interactive Forms**: Users can fill out forms to submit information.
 - **Search Functionality**: Search and filter opportunities.
-- **Automated Notifications**: Receive notifications for new opportunities.
+- **CV Generator**: Users can create professional CVs by filling out a simple form.
+- **Mail**: Users receive notifications about new posted opportunities directly to their Gmail inbox.
 - **Admin Features**: Admins can manage and approve posts.
   
 ## Technologies Used
